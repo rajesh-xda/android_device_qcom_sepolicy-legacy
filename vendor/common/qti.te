@@ -17,16 +17,23 @@ allow qti self:{
     netlink_socket
     socket
     udp_socket
+    qipcrtr_socket
 } create_socket_perms_no_ioctl;
 
 allow qti self:socket ioctl;
-allowxperm qti self:socket ioctl msm_sock_ipc_ioctls;
-allow qti { vendor_shell_exec system_file }:file rx_file_perms;
+allowxperm qti self:{ socket qipcrtr_socket } ioctl msm_sock_ipc_ioctls;
+allow qti vendor_shell_exec:file rx_file_perms;
 
 allow qti sysfs_data:file r_file_perms;
+
+# Allow write permissions for log file
+allow qti vendor_qti_data_file:file create_file_perms;
+allow qti vendor_qti_data_file:dir rw_dir_perms;
 
 #diag
 userdebug_or_eng(`
     diag_use(qti)
-    allow qti sysfs:file r_file_perms;
 ')
+
+#Allow qti to r/w qti socket
+allow qti dataqti_socket:sock_file rw_file_perms;

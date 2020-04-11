@@ -41,6 +41,7 @@ allow hal_bootctl {
   modem_block_device
   system_block_device
   mdtp_device
+  recovery_block_device
 }:blk_file { getattr };
 
 # Allow the boot_control_hal to edit the attributes stored in the GPT.
@@ -51,7 +52,6 @@ allow hal_bootctl root_block_device:blk_file rw_file_perms;
 # A/B slot selection for the XBL partition. Allow also to issue a
 # UFS_IOCTL_QUERY ioctl.
 allow hal_bootctl sg_device:chr_file rw_file_perms;
-allow hal_bootctl sysfs:dir r_dir_perms;
 
 # The sys_rawio denial message is benign, and shows up due to a capability()
 # call made by the scsi driver to check for CAP_SYS_RAWIO. Not having this
@@ -60,3 +60,7 @@ dontaudit hal_bootctl self:capability sys_rawio;
 
 # Allow boot_control_hal to write to the XBL devices.
 allow hal_bootctl xbl_block_device:blk_file rw_file_perms;
+
+# Read the sysfs to lookup what /dev/sgN device
+# corresponds to the XBL partitions.
+allow hal_bootctl sysfs_scsi_target:dir r_dir_perms;

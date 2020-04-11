@@ -32,8 +32,6 @@ type touchfusion_exec, exec_type, vendor_file_type, file_type;
 
 init_daemon_domain(touchfusion)
 
-domain_auto_trans(kernel, touchfusion_exec, touchfusion);
-
 allow touchfusion kmsg_device:chr_file rw_file_perms;
 
 allow touchfusion graphics_device:dir r_dir_perms;
@@ -45,5 +43,5 @@ allow touchfusion graphics_device:chr_file rw_file_perms;
 allow touchfusion self:capability { setgid setuid };
 
 userdebug_or_eng(`
-allow touchfusion self:capability { sys_nice net_admin dac_override dac_read_search };
+allow touchfusion self:capability { sys_nice net_admin };
 ')

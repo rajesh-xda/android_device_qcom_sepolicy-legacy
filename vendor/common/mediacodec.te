@@ -50,31 +50,34 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #mediacodec need intraction with audio device nodes
-allow mediacodec audio_device:chr_file rw_file_perms;
+allow mediacodec msm_aac_in_device:chr_file rw_file_perms;
 
-#allow mediacodec to access adsprpcd
-r_dir_file(mediacodec, adsprpcd_file);
-r_dir_file(mediacodec, firmware_file);
+get_prop(mediacodec, adsprpc_prop)
 
 #Allow mediacodec to access proc_net files
 allow mediacodec proc_net:file r_file_perms;
 
-allow mediacodec system_file:dir r_dir_perms;
 allow mediacodec qdsp_device:chr_file r_file_perms;
+allow mediacodec xdsp_device:chr_file r_file_perms;
 
 #Allow mediacodec to access service manager wfdnativemm_service
 allow mediacodec wfdnativemm_service:service_manager find;
 hal_client_domain(mediacodec, wifidisplayhalservice)
 
-allow mediacodec media_data_file:dir create_dir_perms;
-allow mediacodec media_data_file:file create_file_perms;
+#Allow mediacodec to access vendor_media_data_file files
+allow mediacodec vendor_media_data_file:dir create_dir_perms;
+allow mediacodec vendor_media_data_file:file create_file_perms;
 
-# DOLBY_START
-#allow mediacodec audioserver_service:service_manager find;
-set_prop(mediacodec, dolby_prop)
-# DOLBY_END
-allow mediacodec debug_gralloc_prop:file r_file_perms;
 vndbinder_use(mediacodec);
 hwbinder_use(mediacodec);
 hal_client_domain(mediacodec, hal_vpp)
 hal_client_domain(mediacodec, hal_perf)
+
+get_prop(mediacodec, mm_video_prop)
+get_prop(mediacodec, vendor_video_prop)
+
+allow mediacodec hal_display_config_hwservice:hwservice_manager find;
+allow mediacodec hal_graphics_composer_default:binder call;
+allow mediacodec qdisplay_service:service_manager find;
+#Allow mediacodec to access audio devices for tunnel decoding
+allow mediacodec audio_device:chr_file rw_file_perms;

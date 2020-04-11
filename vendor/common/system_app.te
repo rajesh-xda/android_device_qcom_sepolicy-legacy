@@ -24,13 +24,7 @@
 
 # fm_radio app needes  open read write on fm_radio_device
 allow system_app fm_radio_device:chr_file r_file_perms;
-r_dir_file(system_app, fm_data_file);
 r_dir_file(system_app, bluetooth_data_file);
-r_dir_file(system_app, bt_firmware_file);
-
-set_prop(system_app, ctl_default_prop)
-set_prop(system_app, fm_prop)
-set_prop(system_app, usf_prop)
 
 allow system_app {
     atfwd_service
@@ -43,23 +37,12 @@ allow system_app {
 userdebug_or_eng(`
   allow system_app qti_debugfs:file r_file_perms;
   allow system_app su:unix_dgram_socket sendto;
-  allow system_app persist_file:dir r_dir_perms;
-  allow system_app sensors_persist_file:dir r_dir_perms;
-  allow system_app sensors_persist_file:file rw_file_perms;
-  # access to firmware file
-  r_dir_file(system_app, firmware_file);
 
   # Access to tombstone segfaults
   allow system_app tombstone_data_file:dir r_dir_perms;
   allow system_app tombstone_data_file:file r_file_perms;
   diag_use(system_app)
 
-  # allow to read ssr ramdump
-  allow system_app ssr_ramdump_data_file:dir r_dir_perms;
-  allow system_app ssr_ramdump_data_file:file r_file_perms;
-
-  # allow system app to read crash_prop
-  allow system_app crash_prop:file r_file_perms;
 ')
 
 allow system_app cnd_data_file:dir w_dir_perms;
@@ -69,20 +52,10 @@ allow system_app bluetooth:unix_stream_socket ioctl;
 # access to tee domain
 #allow system_app tee:unix_dgram_socket sendto;
 
-# system app to access DTS data files
-r_dir_file(system_app, dts_data_file)
-
-# usf (ultrasound) apps need following permissions
-#allow system_app usf:unix_stream_socket connectto;
-allow system_app usf_data_file:sock_file write;
-allow system_app usf_data_file:dir rw_dir_perms;
-allow system_app usf_data_file:{ file lnk_file } create_file_perms;
-
 # Allow hbtp hal Service to be found
 hal_client_domain(system_app, hal_hbtp)
 
 #access to wifi_ftmd
-set_prop(system_app, wififtmd_prop)
 #unix_socket_send(system_app, wififtmd, wifi_ftmd)
 
 # allow system_app to interact with dtseagleservice
@@ -115,6 +88,9 @@ binder_call(system_app, seemp_health_daemon)
 # allow system_app to interact with display color hal
 hal_client_domain(system_app, hal_display_color)
 
+# allow system_app to interact with pasr hal
+hal_client_domain(system_app, hal_pasrmanager)
+
 # allow system_app to interact with display postproc hal
 hal_client_domain(system_app, hal_display_postproc)
 
@@ -136,9 +112,6 @@ allow system_app qti_logkit_priv_socket:dir r_dir_perms;
 #unix_socket_connect(system_app, qti_logkit_priv, qti_logkit)
 #allow system_app qti_logkit_priv_socket:sock_file r_file_perms;
 
-# iwconfig
-allow system_app wcnss_service_exec:file rx_file_perms;
-
 # bugreport
 set_prop(system_app, ctl_dumpstate_prop)
 unix_socket_connect(system_app, dumpstate, dumpstate)
@@ -153,28 +126,14 @@ allow system_app gba_auth_service:service_manager find;
 allow system_app wbc_service:service_manager add;
 allow system_app self:netlink_kobject_uevent_socket { read bind setopt create };
 
-# allow system_app to interact with mdtp daemon
-binder_call(system_app, mdtpdaemon)
-
-# allow access to system_app for audio pp files
-r_dir_file(system_app, audio_pp_data_file);
 
 # allow access to system app for radio files
 allow system_app radio_data_file:dir rw_dir_perms;
 allow system_app radio_data_file:file create_file_perms;
 
-# DOLBY_START
-set_prop(system_app, dolby_prop)
-# DOLBY_END
-
-allow system_app persist_file:dir rw_dir_perms;
-allow system_app persist_misc_file:dir rw_dir_perms;
-allow system_app persist_misc_file:file create_file_perms;
-
 # required for FM App to connectto wcnss_filter sockets
 # serial device ttyHS0 (transport layer for FM)
 allow system_app serial_device:chr_file rw_file_perms;
-set_prop(system_app, bluetooth_prop)
 # access unix sockets for fm application
 unix_socket_connect(system_app,bluetooth, bluetooth)
 # access  wcnss_filter from fm app
@@ -192,43 +151,38 @@ allow system_app system_data_file:dir read;
 # allow system app to interact with hal_qteeconnector
 hal_client_domain(system_app, hal_qteeconnector);
 
-#allow system_app access boot mode switch
-set_prop(system_app, boot_mode_prop);
-
 # allow access to cache recovery for LK3
 allow system_app cache_file:dir create_dir_perms;
 allow system_app cache_file:file create_file_perms;
 allow system_app cache_recovery_file:dir rw_dir_perms;
 allow system_app cache_recovery_file:file create_file_perms;
 
-#Allow system app access mmi_data_file
-allow system_app mmi_data_file:dir create_dir_perms;
-allow system_app mmi_data_file:file create_file_perms;
-
 # update engine
 binder_call( system_app, update_engine )
 
 hal_client_domain(system_app, hal_perf)
-hal_client_domain(system_app, hal_iop)
-
-#allow system_app access ioctl
-allowxperm system_app self:socket ioctl msm_sock_ipc_ioctls;
-allow system_app self:socket ioctl;
 
 #allow system app to interact with the esepowermanager
 hal_client_domain(system_app, hal_esepowermanager)
+get_prop(system_app, fm_prop)
 
-allow system_app vendor_radio_data_file:dir rw_dir_perms;
-allow system_app vendor_radio_data_file:file create_file_perms;
+#allow system_app access factory
+hal_client_domain(system_app, vendor_hal_factory_qti);
 
 #secureUI
 hal_client_domain(system_app, hal_qdutils_disp);
 hal_client_domain(system_app, hal_tui_comm);
-
-#allow system_app access factory
-hal_client_domain(system_app, hal_factory_qti);
-
-allow system_app graphics_device:chr_file r_file_perms;
-allow system_app graphics_device:dir r_dir_perms;
-
 hal_client_domain(system_app, hal_sensorscalibrate_qti);
+
+#soter
+hal_client_domain(system_app, hal_soter);
+
+get_prop(system_app, vendor_radio_prop)
+
+hal_client_domain(system_app, hal_fm);
+
+#allow system app to access btconfigstore hal
+hal_client_domain(system_app, hal_btconfigstore)
+
+#allow system app to access capabilityconfigstore hal
+hal_client_domain(system_app, hal_capabilityconfigstore_qti);

@@ -31,13 +31,15 @@ type hal_gnss_qti_exec, exec_type, vendor_file_type, file_type;
 init_daemon_domain(hal_gnss_qti)
 
 hal_server_domain(hal_gnss_qti, hal_gnss)
+# Allow Gnss HAL to get updates from health hal
+hal_client_domain(hal_gnss_qti, hal_health)
 
-allow hal_gnss location_data_file:dir { rw_dir_perms };
+allow hal_gnss_qti location_data_file:dir r_dir_perms;
 allow hal_gnss location_data_file:file create_file_perms;
-allow hal_gnss location_data_file:sock_file { create unlink };
-allow hal_gnss location:unix_dgram_socket sendto;
 allow hal_gnss location_socket:sock_file create_file_perms;
 allow hal_gnss location_socket:dir rw_dir_perms;
+allow hal_gnss location:unix_stream_socket connectto;
+allow hal_gnss location:unix_dgram_socket sendto;
 
 unix_socket_connect(hal_gnss, location, location)
 
@@ -46,19 +48,19 @@ allow hal_gnss self:{
     socket
     netlink_socket
     netlink_generic_socket
+    qipcrtr_socket
 } create_socket_perms_no_ioctl;
 allow hal_gnss self:netlink_route_socket { create_socket_perms_no_ioctl nlmsg_read nlmsg_write };
 
-allow hal_gnss self:socket rw_socket_perms;
-allow hal_gnss sysfs:file r_file_perms;
+allow hal_gnss self:{ socket qipcrtr_socket } rw_socket_perms;
 allow hal_gnss sysfs_data:file r_file_perms;
-allow hal_gnss sysfs:dir r_dir_perms;
 
 allow hal_gnss self:socket { create ioctl };
-allowxperm hal_gnss self:socket ioctl msm_sock_ipc_ioctls;
+
+allowxperm hal_gnss self:{ socket qipcrtr_socket } ioctl msm_sock_ipc_ioctls;
 
 userdebug_or_eng(`
   diag_use(hal_gnss);
+  get_prop(hal_gnss, vendor_pd_locater_dbg_prop)
 ')
-use_per_mgr(hal_gnss)
-qmux_socket(hal_gnss)
+use_vendor_per_mgr(hal_gnss)

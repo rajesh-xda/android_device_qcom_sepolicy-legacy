@@ -4,7 +4,7 @@ type hbtp_exec, exec_type, vendor_file_type, file_type;
 init_daemon_domain(hbtp)
 hal_server_domain(hbtp, hal_hbtp)
 # Allow access for /dev/hbtp_input and /dev/jdi-bu21150
-allow hbtp { hbtp_device qdsp_device dsp_device bu21150_device }:chr_file rw_file_perms;
+allow hbtp { hbtp_device qdsp_device dsp_device bu21150_device xdsp_device }:chr_file rw_file_perms;
 
 allow hbtp hbtp_log_file:dir rw_dir_perms;
 allow hbtp hbtp_log_file:file create_file_perms;
@@ -14,6 +14,9 @@ allow hbtp hbtp_cfg_file:file r_file_perms;
 
 allow hbtp firmware_file:dir r_dir_perms;
 allow hbtp firmware_file:file r_file_perms;
+
+allow hbtp vendor_firmware_file:dir r_dir_perms;
+allow hbtp vendor_firmware_file:file r_file_perms;
 
 allow hbtp sysfs_usb_supply:file r_file_perms;
 allow hbtp sysfs_usb_supply:dir r_dir_perms;
@@ -33,11 +36,12 @@ allow hbtp self:netlink_kobject_uevent_socket { create read setopt bind };
 # Allow the service to access wakelock sysfs
 allow hbtp sysfs_wake_lock:file r_file_perms;
 
-# Allow the service to change to system from root and have sys_nice capability
-allow hbtp self:capability { setgid setuid sys_nice };
+# Allow the service to change to system from root
+allow hbtp self:capability { setgid setuid };
 
 # Allow load touch driver as touchPD
 r_dir_file(hbtp, adsprpcd_file)
+get_prop(hbtp, adsprpc_prop)
 
 # Allow the service to access wakelock capability
 wakelock_use(hbtp)

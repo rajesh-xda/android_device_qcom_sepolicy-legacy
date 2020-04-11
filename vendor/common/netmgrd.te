@@ -10,9 +10,6 @@ userdebug_or_eng(`
   diag_use(netutils_wrapper)
 ')
 
-#Allow files to be written during the operation of netmgrd
-file_type_auto_trans(netmgrd, system_data_file, data_test_data_file)
-
 #Allow netmgrd operations
 allow netmgrd netmgrd:capability {
     net_raw
@@ -31,8 +28,6 @@ allow netmgrd netmgrd_data_file:dir w_dir_perms;
 
 #Allow netutils usage
 use_netutils(netmgrd)
-allow netutils_wrapper netmgrd_data_file:file rw_file_perms;
-allow netutils_wrapper wcnss_service_exec:file rx_file_perms;
 allow netmgrd netutils_wrapper:process sigkill;
 
 #Allow operations on different types of sockets
@@ -43,36 +38,17 @@ allow netmgrd netmgrd:socket { create };
 allow netmgrd netmgrd:netlink_route_socket { setopt getattr write nlmsg_write };
 allow netmgrd self:netlink_generic_socket create_socket_perms_no_ioctl;
 allow netmgrd self:netlink_tcpdiag_socket { create_socket_perms_no_ioctl nlmsg_read nlmsg_write };
+allow netmgrd self:qipcrtr_socket create_socket_perms_no_ioctl;
 
 unix_socket_connect(netmgrd, cnd, cnd);
 
 qmux_socket(netmgrd);
 
 #Allow writing of ipv6 network properties
-allow netmgrd { proc_net sysfs_net }:file rw_file_perms;
-allow netmgrd sysfs_net:dir r_dir_perms;
-
-#Allow address configuration
-#Allow setting of DNS and GW Android properties
-set_prop(netmgrd, system_prop)
-set_prop(netmgrd, net_radio_prop)
-set_prop(netmgrd, xlat_prop)
-
-#Allow execution of commands in shell
-allow netmgrd system_file:file x_file_perms;
+allow netmgrd { proc_net }:file rw_file_perms;
 
 allow netmgrd self:socket create_socket_perms;
-allow netmgrd sysfs_esoc:dir r_dir_perms;
 
-#Allow communication with netd
-#r_dir_file(netmgrd, net_data_file)
-
-#Allow nemtgrd to use esoc api's to determine target
-allow netmgrd sysfs_esoc:lnk_file r_file_perms;
-
-r_dir_file(netmgrd, sysfs_ssr);
-
-allow netmgrd sysfs:file w_file_perms;
 allow netmgrd sysfs_data:file r_file_perms;
 
 #Acquire lock on /system/etc/xtables.lock
@@ -94,9 +70,17 @@ allowxperm netmgrd self:socket ioctl msm_sock_ipc_ioctls;
 
 #Allow netmgrd to use netd HAL via HIDL
 get_prop(netmgrd, hwservicemanager_prop)
-binder_use(netmgrd)
+# Allow netmgrd to set vendor properties
+set_prop(netmgrd, vendor_data_shsusr_prop)
+
 hwbinder_use(netmgrd)
 binder_call(netmgrd, netd)
 allow netmgrd system_net_netd_hwservice:hwservice_manager find;
-allow netmgrd netd_service:service_manager find;
-allow netmgrd dnsresolver_service:service_manager find;
+
+allow netmgrd sysfs_net:dir r_dir_perms;
+allow netmgrd sysfs_net:file rw_file_perms;
+
+#Allow diag logging
+userdebug_or_eng(`
+  r_dir_file(netmgrd, sysfs_diag)
+')

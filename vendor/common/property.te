@@ -23,89 +23,80 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # property for uicc_daemon
-type uicc_prop, property_type;
 type qcom_ims_prop, property_type;
-type ctl_qmuxd_prop, property_type;
-type ctl_netmgrd_prop, property_type;
-type ctl_port-bridge_prop, property_type;
+type ctl_vendor_qmuxd_prop, property_type;
+type ctl_vendor_netmgrd_prop, property_type;
+type ctl_vendor_port-bridge_prop, property_type;
+type ctl_qcrild_prop, property_type;
+type vendor_tee_listener_prop, property_type;
+type ctl_vendor_rild_prop, property_type;
 
 # property for LKCore ctl start
 type ctl_LKCore_prop, property_type;
 
-# properties for usf daemons
-type usf_prop, property_type;
-
 type freq_prop, property_type;
-type perfd_prop, property_type;
-type vm_bms_prop, property_type; #To start vm_bms
-type qti_prop, property_type;
-type ipacm_prop, property_type;
-type ipacm-diag_prop, property_type;
+type vendor_vm_bms_prop, property_type; #To start vm_bms
+type vendor_dataqti_prop, property_type;
+type vendor_dataadpl_prop, property_type;
+type vendor_dataqdp_prop, property_type;
+type vendor_ipacm_prop, property_type;
+type vendor_ipacm-diag_prop, property_type;
+type cnd_vendor_prop, property_type;
 type sensors_prop, property_type;
+type slpi_prop, property_type;
 type msm_irqbalance_prop, property_type;
 type msm_irqbl_sdm630_prop, property_type;
 type camera_prop, property_type;
 type spcomlib_prop, property_type;
-type sdm_idle_time_prop, property_type;
 type vendor_display_prop, property_type;
 type scr_enabled_prop, property_type;
 type bg_daemon_prop, property_type;
 type bg_boot_complete_prop, property_type;
-type opengles_prop, property_type;
-type mdm_helper_prop, property_type;
-type mpdecision_prop, property_type;
-type gamed_prop, property_type;
+type vendor_opengles_prop, property_type;
+type vendor_mdm_helper_prop, property_type;
 type vendor_mpctl_prop, property_type;
+type vendor_iop_prop, property_type;
+type public_vendor_default_prop, property_type;
+#Scroll Pre-obtain
+type vendor_scroll_prop, property_type;
 
-# Wifi version recorder
-type vendor_wifi_version, property_type;
+# properties for ActivityManager tuning
+type vendor_am_prop, property_type;
 
 #Needed for  ubwc support
-type debug_gralloc_prop, property_type;
+type vendor_gralloc_prop, property_type;
 
 type fm_prop, property_type;
+type ctl_fm_prop, property_type;
 type chgdiabled_prop, property_type;
 
-#properites for netd
-type netd_prop, property_type;
 
-type xlat_prop, property_type;
+type vendor_xlat_prop, property_type;
 
 # property for location
 type location_prop, property_type;
 
 #properites for init.qcom.sh script
-type rmnet_mux_prop, property_type;
-type sys_usb_controller_prop, property_type;
-type sys_usb_configfs_prop, property_type;
+type vendor_usb_prop, property_type;
 
-type sys_usb_tethering_prop, property_type;
-
-type coresight_prop, property_type;
+type vendor_coresight_prop, property_type;
 
 
-type ctl_hbtp_prop, property_type;
-type alarm_boot_prop, property_type;
-type boot_animation_prop, property_type;
+type vendor_alarm_boot_prop, property_type;
 
-# DOLBY_START
-type dolby_prop, property_type;
-# DOLBY_END
 
-type wififtmd_prop, property_type;
+type vendor_wifi_ftmd_prop, property_type;
 
 # WIGIG
-type wigig_prop, property_type;
-type fst_prop, property_type;
 type ctl_vendor_wigigsvc_prop, property_type;
-
-type alarm_handled_prop, property_type;
-type alarm_instance_prop, property_type;
 
 #HWUI property
 type hwui_prop, property_type;
 
 type graphics_vulkan_prop, property_type;
+
+#cgroup follow
+type vendor_cgroup_follow_prop, property_type;
 
 #Bservice property
 type bservice_prop, property_type;
@@ -113,33 +104,87 @@ type bservice_prop, property_type;
 #Delayed Service Reschedule property
 type reschedule_service_prop, property_type;
 
-#mdlog property
-type diag_mdlog_prop, property_type;
-
 #boot mode property
-type boot_mode_prop, property_type;
+type vendor_boot_mode_prop, property_type;
 #properties for nfc
 type nfc_nq_prop, property_type;
-type ppd_prop, property_type;
-type qemu_gles_prop, property_type;
 
 type vendor_rild_libpath_prop, property_type;
 
 #Peripheral manager
-type per_mgr_state_prop, property_type;
+type vendor_per_mgr_state_prop, property_type;
 
 type vendor_system_prop, property_type;
 
-#crash property
-type crash_prop, property_type;
+# Bluetooth props
+type vendor_bluetooth_prop, property_type;
+
+# HBTP
+type ctl_vendor_hbtp_prop, property_type;
+
+# factory properties
+type ctl_vendor_mmid_prop, property_type;
 
 #qdma property
-type qdma_prop, property_type;
+type vendor_qdma_prop, property_type;
 
-type mmi_prop, property_type;
+#MirrorLink
+type vendor_mirrorlink_prop, property_type;
 
 #imsrcsservice
 type ctl_vendor_imsrcsservice_prop, property_type;
 
-#wlan-vendor prop
-type vendor_wifi_prop, property_type;
+#mmi
+type vendor_mmi_prop, property_type;
+
+#time service
+type vendor_time_service_prop, property_type;
+type vendor_radio_prop, property_type;
+
+# Audio props
+type vendor_audio_prop, property_type;
+
+# Audio debug props
+type vendor_audio_debug_prop, property_type;
+
+# Netmgrd props
+type vendor_data_shsusr_prop, property_type;
+
+#ss-restart
+type vendor_ssr_prop, property_type;
+
+#ss-services (PD)
+type vendor_pd_locater_dbg_prop, property_type;
+
+#qdcmss property
+type vendor_qdcmss_prop, property_type;
+
+# Wifi Softap
+type vendor_softap_prop, property_type;
+#mm-parser
+type mm_parser_prop, property_type;
+
+#mm-video
+type mm_video_prop, property_type;
+type vendor_video_prop, property_type;
+
+#rmt_storage
+type ctl_vendor_rmt_storage_prop, property_type;
+
+type vendor_gpu_prop, property_type;
+
+type vendor_data_ko_prop, property_type;
+
+#hvdcp_opti
+type hvdcp_opti_prop, property_type;
+#adsprpc props
+type adsprpc_prop, property_type;
+
+#qvr property
+type qvr_prop, property_type;
+
+# Wifi version recorder
+type vendor_wifi_version, property_type;
+
+#capabilityconfigstore hal (CCHAL)
+type vendor_cap_configstore_dbg_prop, property_type;

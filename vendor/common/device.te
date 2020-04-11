@@ -27,6 +27,7 @@ type battery_data_device, dev_type;
 #Add qdsp_device type
 type qdsp_device, dev_type, mlstrustedobject;
 type dsp_device, dev_type;
+type xdsp_device, dev_type;
 #Define hvdcp/quickcharge device
 type hvdcp_device, dev_type;
 
@@ -73,9 +74,6 @@ type logdump_partition, dev_type;
 
 #Bootselect partition
 type bootselect_device, dev_type;
-
-#define usb_uicc_device for usb_uicc daemon
-type usb_uicc_device, dev_type;
 
 # Define IPA devices
 type ipa_dev, dev_type;
@@ -126,9 +124,6 @@ type rng_device, dev_type;
 #Define system health monitor devices
 type system_health_monitor_device, dev_type;
 
-#Define usf device
-type usf_device, dev_type;
-
 #Define qbt1000 device - ultrasonic fingperprint sensor
 type qbt1000_device, dev_type;
 
@@ -152,11 +147,15 @@ type custom_ab_block_device, dev_type;
 type xbl_block_device, dev_type;
 type gpt_block_device, dev_type;
 type modem_block_device, dev_type;
+type uefi_block_device, dev_type;
 
 #define bgcom char device
 type bg_daemon_device, dev_type;
 
+type persist_block_device, dev_type;
+
+#Define npu device
+type npu_device, dev_type;
+
 #define qg char device
 type qg_device, dev_type;
-
-type persist_block_device, dev_type;

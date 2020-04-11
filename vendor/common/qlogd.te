@@ -12,8 +12,6 @@ allow qlogd smem_log_device:chr_file rw_file_perms;
 allow qlogd self:capability {
     setuid
     setgid
-    dac_override
-    dac_read_search
     sys_admin
     net_raw
     net_admin
@@ -24,11 +22,6 @@ allow qlogd self:capability {
 };
 allow qlogd self:capability2 syslog;
 allow qlogd self:packet_socket { create bind getopt setopt };
-
-# need to access system_data partitions for configration files
-allow qlogd qlogd_data_file:dir rw_dir_perms;
-allow qlogd qlogd_data_file:file create_file_perms;
-allow qlogd system_file:file x_file_perms;
 
 # need to create and listen socket
 allow qlogd qlogd_socket:sock_file create_file_perms;
@@ -47,7 +40,6 @@ allow qlogd kernel:system syslog_mod;
 userdebug_or_eng(`
   allow qlogd { debugfs_tracing qdss_device }:file r_file_perms;
   allow qlogd { qdss_device }:file r_file_perms;
-  allow qlogd sysfs:file w_file_perms;
   r_dir_file(qlogd, storage_file)
   r_dir_file(qlogd, mnt_user_file)
   diag_use(qlogd)

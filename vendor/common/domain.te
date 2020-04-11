@@ -1,18 +1,18 @@
-r_dir_file(domain, sysfs_socinfo);
-r_dir_file(domain, sysfs_esoc);
-r_dir_file(domain, sysfs_ssr);
+r_dir_file({domain - isolated_app}, sysfs_socinfo);
+r_dir_file({domain - isolated_app}, sysfs_esoc);
+r_dir_file({domain - isolated_app}, sysfs_ssr);
 
 dontaudit domain kernel:system module_request;
 
 # Allow all domains read access to sysfs_thermal
-r_dir_file(domain, sysfs_thermal);
+r_dir_file({domain - isolated_app}, sysfs_thermal);
 
 # Allow domain to read /vendor -> /system/vendor
 allow domain system_file:lnk_file getattr;
 
-allow domain debug_gralloc_prop:file r_file_perms;
+get_prop(domain, vendor_gralloc_prop)
 
-not_full_treble(`allow domain vendor_file:dir r_dir_perms;')
+allow domain vendor_configs_file:file r_file_perms;
 
 # Added now for smoother UI
 # Remove this after HIDL implementation
@@ -21,7 +21,23 @@ allow domain hal_graphics_composer:fd use;
 ')
 dontaudit domain persist_dpm_prop:file r_file_perms;
 
-allow domain sysfs_kgsl_gpuclk:file r_file_perms;
-allow domain  sysfs_kgsl_gpuclk:lnk_file r_file_perms;
+neverallow {
+    coredomain
+    -init
+    -ueventd
+    -vold
+    } vendor_persist_type: { dir file } *;
+
+allow { domain - coredomain } mnt_vendor_file:lnk_file r_file_perms;
+
+allowxperm domain domain:icmp_socket ioctl { unpriv_sock_ioctls unpriv_tty_ioctls };
+
+# allow all context to read gpu model
+allow { domain - isolated_app } sysfs_kgsl_gpu_model:file r_file_perms;
+
+# For compliance testing test suite reads vendor_security_path_level
+# Which is the public readable property “ ro.vendor.build.security_patch
+get_prop(domain, vendor_security_patch_level_prop)
+get_prop(domain, public_vendor_default_prop)
+
 allow domain qti_debugfs:dir search;
-allow domain kgsl_debugfs:dir search;

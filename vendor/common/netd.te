@@ -15,9 +15,6 @@ hal_client_domain(netd, wifidisplayhalservice);
 #allow netd to use privileged sock ioctls
 allowxperm netd self: { unix_stream_socket } ioctl priv_sock_ioctls;
 
-# needed for netd to start FST Manager via system property
-set_prop(netd, netd_prop)
-
 allow netd self:capability fsetid;
 #allow netd hostapd:unix_dgram_socket sendto;
 
@@ -25,5 +22,9 @@ allow netd self:capability fsetid;
 allow netd dhcp_data_file:dir create_dir_perms;
 
 type_transition netd wifi_data_file:dir wpa_socket "sockets";
-allow netd wpa_socket:dir create_dir_perms;
 #allow netd wpa_socket:sock_file create_file_perms;
+
+# If an already existing file is opened with O_CREAT,
+# the kernel might generate a false report of a create
+# denial. Silence these denials
+dontaudit netd system_file:dir write;

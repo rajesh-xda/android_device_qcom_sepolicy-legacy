@@ -4,7 +4,7 @@ allow init self:capability sys_module;
 allow init {
     adsprpcd_file
     cache_file
-    persist_file
+    mnt_vendor_file
     storage_file
 }:dir mounton;
 allow init kmsg_device:chr_file write;
@@ -25,14 +25,19 @@ allow init tmpfs:lnk_file create_file_perms;
 
 #For configfs file permission
 allow init configfs:dir r_dir_perms;
-allow init configfs:file { create_file_perms link };
+allow init configfs:file { rw_file_perms link };
 allow init configfs:lnk_file create_file_perms;
 
 #Allow init to mount non-hlos partitions in A/B builds
-allow init firmware_file:dir { mounton };
-allow init bt_firmware_file:dir { mounton };
+allow init { bt_firmware_file vendor_firmware_file  firmware_file } :dir mounton;
 
-allow init sysfs_boot_adsp:file w_file_perms;
+# Moved to vendor so need relabelfrom and associate permissions
+allow init { bt_firmware_file firmware_file }:filesystem  { relabelfrom  mount };
+#TODO: This should not be needed and needs to be cleaned.
+allow { bt_firmware_file firmware_file  }self:filesystem associate;
+
+allow init sysfs_boot_adsp:file write;
+allow init sysfs_slpi:file write;
 allow init sysfs_graphics:file setattr;
 
 #dontaudit non configfs usb denials
@@ -54,11 +59,6 @@ allow init {
     mdtp_device
 }:{ blk_file lnk_file } relabelto;
 
-#rawdump
-allow init rawdump_block_device:blk_file setattr;
-
-#cpu.rt_period_us and _runtime_us need this
-allow init cgroup:file create;
-
-# Allow init to bind mount loader config for media swcodec
-allow init system_file:file mounton;
+#Blocked by neverallow vendor_init { file_type fs_type -init_exec }:file entrypoint;
+#domain_trans(init, vendor_init_exec, vendor_init);
+allow init mnt_vendor_file:lnk_file r_file_perms;

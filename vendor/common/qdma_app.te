@@ -25,14 +25,10 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-type qdma_app, domain;
+type qdma_app, domain, mlstrustedsubject;
 app_domain(qdma_app)
 net_domain(qdma_app)
 binder_use(qdma_app)
-
-# read and write /data/data subdirectory.
-allow qdma_app qdma_app_data_file:dir create_dir_perms;
-allow qdma_app qdma_app_data_file:{ file lnk_file } create_file_perms;
 
 # allow invoking activity and access app content to qdma_app
 allow qdma_app { activity_service content_service }:service_manager find;
@@ -46,10 +42,12 @@ allow qdma_app { radio_service registry_service }:service_manager find;
 allow qdma_app { power_service }:service_manager find;
 # allow to load native library
 allow qdma_app { mount_service }:service_manager find;
+# for vendor_perf_service
+allow qdma_app app_api_service:service_manager find;
 
 # allow access to qdma dropbox
-allow qdma_app qdma_data_file:dir create_dir_perms;
-allow qdma_app qdma_data_file:file create_file_perms;
+allow qdma_app vendor_qdma_data_file:dir create_dir_perms;
+allow qdma_app vendor_qdma_data_file:file create_file_perms;
 
 allow qdma_app user_service:service_manager find;
 
@@ -60,5 +58,19 @@ unix_socket_connect(qdma_app, dpmtcm, dpmd)
 allow qdma_app qdma_socket:dir w_dir_perms;
 allow qdma_app qdma_socket:sock_file create_file_perms;
 
+# for /dev/socket/qdma/qdma-campmgr-s
+unix_socket_connect(qdma_app, qdma, qdmastatsd)
+
+# allow access to mediadrmserver for qdmastats/wvstats
+allow qdma_app mediadrmserver_service:service_manager find;
+
+# allow qdma_app to access system_app_data_file
+# necessary for read and write /data/data subdirectory.
+allow qdma_app system_app_data_file:dir create_dir_perms;
+allow qdma_app system_app_data_file:file create_file_perms;
+
 # allow qdma_prop
-set_prop(qdma_app, qdma_prop);
+set_prop(qdma_app, vendor_qdma_prop);
+
+# allow cgroup access
+allow qdma_app cgroup:file rw_file_perms;

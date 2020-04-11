@@ -11,9 +11,6 @@ userdebug_or_eng(`
 # Allow operations on different types of sockets
 allow port-bridge port-bridge:netlink_kobject_uevent_socket { create bind read };
 
-# Allow process capabilities
-allow port-bridge port-bridge:capability dac_override;
-
 allow port-bridge {
     # Allow operations on mhi transport
     mhi_device
@@ -28,5 +25,4 @@ allow port-bridge port_bridge_data_file:file create_file_perms;
 allow port-bridge port_bridge_data_file:dir w_dir_perms;
 
 #access ipa sysfs node
-allow port-bridge sysfs:file r_file_perms;
 allow port-bridge sysfs_data:file r_file_perms;
