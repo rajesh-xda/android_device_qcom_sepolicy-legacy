@@ -1,12 +1,12 @@
 # Board specific SELinux policy variable definitions
 BOARD_SEPOLICY_DIRS += \
-    device/qcom/sepolicy-legacy/common \
-    device/qcom/sepolicy-legacy/ssg \
-    device/qcom/sepolicy-legacy/$(TARGET_BOARD_PLATFORM)
+    device/qcom/sepolicy-legacy/vendor/common \
+    device/qcom/sepolicy-legacy/vendor/ssg \
+    device/qcom/sepolicy-legacy/vendor/$(TARGET_BOARD_PLATFORM)
 
 ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
 BOARD_SEPOLICY_DIRS += \
-    device/qcom/sepolicy-legacy/test
+    device/qcom/sepolicy-legacy/vendor/test
 
 SELINUX_IGNORE_NEVERALLOWS := true
 endif
@@ -19,7 +19,7 @@ BOARD_PLAT_PRIVATE_SEPOLICY_DIR += \
 
 # Board specific SELinux policy variable definitions for legacy devices
 BOARD_SEPOLICY_DIRS += \
-    device/qcom/sepolicy-legacy/legacy-common
+    device/qcom/sepolicy-legacy/vendor/legacy-common
 
 # Add sepolicy version to support OS upgrade and backward compatibility
 BOARD_SEPOLICY_VERS := $(PLATFORM_SDK_VERSION).0
